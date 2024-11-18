@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Display API Key
+      env:
+        API_KEY: ${{ secrets.API_KEY }}  # 从 GitHub Secrets 中注入密钥
+      run: |
+        echo "Your API Key is: $API_KEY"
+        # 注意：不要直接在日志中输出完整的 API Key，生产环境需避免此类操作。
+
+    - name: Use API Key in a script
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+      run: |
+        echo "Using API Key in script..."
+        # 例如调用某个服务
+        curl -X POST https://example.com/api \
+          -H "Authorization: Bearer $API_KEY" \
+          -d '{"key": "value"}'
+
+    - name: Run a one-line script
+      run: echo Hello, world!
+
+    - name: Run a multi-line script
+      run: |
+        echo Add other actions to build,
+        echo test, and deploy your project.
